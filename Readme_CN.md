@@ -1,6 +1,7 @@
 # EasyNumbericLib
 
 [![License](https://img.shields.io/badge/English-orange.svg)](./README.md)
+[![License](https://img.shields.io/badge/%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-purple.svg)](./Readme_CN.md)
 
 ## 关于
 
@@ -62,9 +63,9 @@ int main()
 
 ## 许可证
 
-![License](https://img.shields.io/badge/License-GPL%203.0-blue.svg)
+[![License](https://img.shields.io/badge/License-GPL%203.0-blue.svg)](./LICENSE.txt)
 
-This project is licensed under the GPL-3.0 License - see the LICENSE(./LICENSE.txt) file for details.
+This project is licensed under the GPL-3.0 License - see the [LICENSE](./LICENSE.txt) file for details.
 
 ## 联系
 
