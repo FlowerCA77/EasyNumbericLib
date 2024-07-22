@@ -1,7 +1,6 @@
 # EasyNumbericLib
 
 [![License](https://img.shields.io/badge/English-orange.svg)](./README.md)
-[![License](https://img.shields.io/badge/中文-green.svg)](./Readme_CN.md)
 
 ## 关于
 
