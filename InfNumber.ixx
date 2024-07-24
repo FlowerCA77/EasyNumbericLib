@@ -2,39 +2,19 @@ export module InfNumber;
 
 import <vector>;
 import <string>;
+import <unordered_map>;
 
 import <iostream>;
 import <sstream>;
 import <format>;
+import <algorithm>;
 
 import <stdexcept>;
 import <limits>;
+import <memory>;
 
-/*
- * std::string DigitToChar(int)
- *    Convert the positive int n to a std::string sn, where when 0 <= n <= 9, sn is a single
- *    character string composed of the characters corresponding to n. When 10 <= n <= 35, sn
- *    is a single character string mapped from the uppercase alphabet in the order of 10->A,
- *    11->B,..., 35->Z. When n>36, output the decimal representation string of n. If n is
- *    negative, the output result is equivalent to the absolute value of n.
- * 
- * template <typename StreamType>
- * void outputStream(StreamType&, const InfInt&)
- *    Output InfInt integer to StreamType& stream, where StreamType& is used to identify the
- *    type of output stream, such as std::ostream, std::stringstream, etc. The output method
- *    is S(INTSTR)_(PSTR), where S is represented by "+", "-", or "" for positive, negative,
- *    and zero values, respectively. INTSTR is a PSTR(=_base) base string generated according
- *    to the mapping rules of std::string DigitToChar (int), and PSTR is _base's base 10 string.
- *    There are specializations for the four cases of binary, octal, decimal, and hexadecimal,
- *    and the output mode is changed to S#PREVIX#INTSTR, where the prefix PREVIX is "0b", "0", 
- *    "", and "0x" respectively.
- * 
- * Class InfInt
- *	  // TODO 没写完， 注意写完后改成doxygen文档注释
- */
 
-export std::string DigitToChar(int n)
-{
+export std::string DigitToChar(int n) {
 	std::string CharStr;
 	if (n < 0) CharStr = DigitToChar(-n);
 	else if (n < 10) CharStr.push_back((char)(n + 0x30));
@@ -52,26 +32,14 @@ export std::string DigitToChar(int n)
 template<typename Ty>
 int Sign(Ty value) {
 	if constexpr (std::is_integral_v<Ty>) {
-		if (value > 0) {
-			return 1;
-		}
-		else if (value < 0) {
-			return -1;
-		}
-		else {
-			return 0;
-		}
+		if (value > 0) return 1;
+		else if (value < 0) return -1;
+		else return 0;
 	}
 	else if constexpr (std::is_floating_point_v<Ty>) {
-		if (std::signbit(value)) {
-			return -1;
-		}
-		else if (value == 0) {
-			return 0;
-		}
-		else {
-			return 1;
-		}
+		if (std::signbit(value)) return -1;
+		else if (value == 0) return 0;
+		else return 1;
 	}
 	else {
 		static_assert(std::is_integral_v<Ty> || std::is_floating_point_v<Ty>,
@@ -79,19 +47,24 @@ int Sign(Ty value) {
 	}
 }
 
-export class InfInt
-{
+export class InfInt {
 public:
 
 	// constructor and destructor
 
+	InfInt(std::vector<int> digits, int base, int sign)
+		: _digits(std::make_shared<std::vector<int>>(digits)), _base(base), _sign(sign) {}
+	InfInt(std::vector<int>* digits, int base, int sign)
+		: _digits(std::shared_ptr<std::vector<int>>(digits)), _base(base), _sign(sign) {
+		digits = nullptr;
+	}
+	InfInt(std::shared_ptr<std::vector<int>> digits, int base, int sign)
+		: _digits(digits), _base(base), _sign(sign) {}
+
 	template<typename tyInt = int>
-	InfInt(tyInt _copyInt, int base = 10) requires std::integral<tyInt> : _base(base), _sign(
-		Sign(_copyInt)
-	)
-	{
+	InfInt(tyInt _copyInt, int base = 10) requires std::integral<tyInt>
+		: _digits(std::make_shared<std::vector<int>>()), _base(base), _sign(Sign(_copyInt)) {
 		_copyInt = _sign == -1 ? -_copyInt : _copyInt;
-		_digits = new std::vector<int>{};
 		if (_copyInt == 0) { _digits->push_back(0); return; }
 		while (_copyInt)
 		{
@@ -100,9 +73,9 @@ public:
 		}
 	}
 
-	InfInt() : InfInt(10, 0) {};
-	InfInt(std::string literal, int base = 10, int sign = 1) : _digits(new std::vector<int>{}), _base(base), _sign(sign)
-	{
+	InfInt() : InfInt(0) {};
+	InfInt(std::string literal, int base = 10, int sign = 1)
+		: _digits(std::make_shared<std::vector<int>>()), _base(base), _sign(sign) {
 		if (literal == "0") { _sign = 0; }
 		for (auto It = literal.rbegin(); It != literal.rend(); ++It)
 		{
@@ -114,22 +87,20 @@ public:
 	}
 
 	InfInt(const InfInt& other) // copy_constructor
-		: _digits(new std::vector<int>(*other._digits)), _base(other._base), _sign(other._sign) {}
+		: _digits(std::make_shared<std::vector<int>>(*other._digits)), _base(other._base), _sign(other._sign) {}
 
 	InfInt(InfInt&& other) noexcept // move_constructor
-		: _digits(other._digits), _base(other._base), _sign(other._sign)
-	{
+		: _digits(other._digits), _base(other._base), _sign(other._sign) {
 		other._digits = nullptr;
 	}
 
 	int GetBase() const { return _base; }
 	int GetSign() const { return _sign; }
-	auto CopyDigitsToVector() const { return _digits; }
-
-	~InfInt()
-	{
-		delete _digits;
-		_digits = nullptr;
+	auto GetDigits() const {
+		if (_digits)
+			return std::make_shared<std::vector<int>>(*_digits);
+		else
+			return std::shared_ptr<std::vector<int>>(nullptr);
 	}
 
 	// basic convertors
@@ -151,31 +122,8 @@ public:
 		return val;
 	}
 
-	void BaseConvert(int newBase) //TODO：有问题，无法工作，要重写
-	{
-		if (newBase == this->_sign) return;
-
-		auto* result = new std::vector<int>{};
-
-		int carry = 0;
-		for (int digit : *(this->_digits))
-		{
-			int current = digit + (carry * this->_base);
-			result->push_back(current % newBase);
-			carry = current / newBase;
-		}
-		while (carry > 0) {
-			result->push_back(carry % newBase);
-			carry /= newBase;
-		}
-		std::reverse(result->begin(), result->end());
-
-		delete this->_digits;
-		this->_digits = result;
-		result = nullptr;
-
-		this->_base = newBase;
-	}
+	/*  base convertor */
+	std::shared_ptr<InfInt> baseConvert(int newBase) const;
 
 	// transformation operator
 
@@ -188,7 +136,7 @@ public:
 	std::shared_ptr<InfInt> PosAdd(const InfInt& other) const
 	{
 		std::shared_ptr<InfInt> sum = std::make_shared<InfInt>(*this);
-		if (this->_sign <= 0) return sum;
+		// TODO 必须要写进制转换，写完才能进一步完善无限大整数的内容
 	}
 
 	// operator
@@ -201,7 +149,7 @@ public:
 	friend std::ostream& operator<<(std::ostream&, const InfInt&);
 
 private:
-	std::vector<int>* _digits;
+	std::shared_ptr<std::vector<int>> _digits;
 	int _base;
 	int _sign;
 };
@@ -239,9 +187,10 @@ void outputStream(StreamType& stream, const InfInt& n)
 
 	if (n.GetBase() != 2 && n.GetBase() != 8 && n.GetBase() != 10 && n.GetBase() != 16)
 		stream << (char)(0x28);
-	auto d_List = n.CopyDigitsToVector();
-	for (auto It = d_List->rbegin(); It != d_List->rend(); ++It)
-		stream << DigitToChar(*It);
+	auto d_List = n.GetDigits();
+	if (d_List)
+		for (auto It = d_List->rbegin(); It != d_List->rend(); ++It)
+			stream << DigitToChar(*It);
 	if (n.GetBase() != 2 && n.GetBase() != 8 && n.GetBase() != 10 && n.GetBase() != 16)
 		stream << (char)(0x29) << "_" << std::format("({})", n.GetBase());
 }
@@ -268,3 +217,73 @@ public:
 		return std::format_to(ctx.out(), "{}", ss.str());
 	}
 };
+
+/*
+ * author: ChatGPT 4o/4o-mini
+ */
+std::unordered_map<int, std::unordered_map<int, std::vector<int>>> bin_hex_linksTable = {
+	{2,	 {  {0,		{0, 0, 0, 0}},	{1,		{0, 0, 0, 1}},	{2,		{0, 0, 1, 0}},	{3,		{0, 0, 1, 1}},
+			{4, 	{0, 1, 0, 0}},	{5,		{0, 1, 0, 1}},	{6,		{0, 1, 1, 0}},	{7,		{0, 1, 1, 1}},
+			{8, 	{1, 0, 0, 0}},	{9,		{1, 0, 0, 1}},	{10,	{1, 0, 1, 0}},	{11,	{1, 0, 1, 1}},
+			{12,	{1, 1, 0, 0}},	{13,	{1, 1, 0, 1}},	{14,	{1, 1, 1, 0}},	{15,	{1, 1, 1, 1}}		}},
+	{16, {  {0,		{0}},			{1,		{1}},			{2,		{2}},			{3,		{3}},
+			{4,		{4}},			{5,		{5}},			{6,		{6}},			{7,		{7}},
+			{8,		{8}},			{9,		{9}},			{10,	{10}},			{11,	{11}},
+			{12,	{12}},			{13,	{13}},			{14,	{14}},			{15,	{15}}				}}
+};
+
+static void baseConvert_common(std::vector<int>& old_digits, std::vector<int>& new_digits, int old_base, int new_base) {
+	if (old_digits.empty() || old_base < 2 || new_base < 2) {
+		return;
+	}
+
+	// Clear new_digits vector
+	new_digits.clear();
+
+	// Initialize variables
+	int _carry = 0;
+	std::vector<int> _temp_digits;
+	_temp_digits.reserve(old_digits.size());
+
+	// Convert each digit of old_digits to the new base
+	for (int _i = old_digits.size() - 1; _i >= 0; --_i) {
+		_carry = old_digits[_i];
+		for (size_t _j = 0; _j < _temp_digits.size(); ++_j) {
+			int _value = _temp_digits[_j] * old_base + _carry;
+			_temp_digits[_j] = _value % new_base;
+			_carry = _value / new_base;
+		}
+		while (_carry > 0) {
+			_temp_digits.push_back(_carry % new_base);
+			_carry /= new_base;
+		}
+	}
+
+	// Remove leading zeros
+	size_t _first_non_zero = 0;
+	while (_first_non_zero < _temp_digits.size() && _temp_digits[_first_non_zero] == 0) {
+		++_first_non_zero;
+	}
+
+	// Copy the relevant digits to new_digits
+	new_digits.assign(_temp_digits.begin() + _first_non_zero, _temp_digits.end());
+
+	// Ensure new_digits is not empty (i.e., for the case of zero)
+	if (new_digits.empty()) {
+		new_digits.push_back(0);
+	}
+}
+
+static void baseConvert_downGrade(std::vector<int>& old_digits, std::vector<int>& new_digits, int old_base, int new_base) {
+}
+
+static void baseConvert_upGrade(std::vector<int>& old_digits, std::vector<int>& new_digits, int old_base, int new_base) {
+}
+
+std::shared_ptr<InfInt> InfInt::baseConvert(int newBase) const {
+	auto newInfInt = std::make_shared<InfInt>();
+	baseConvert_common(*(this->_digits), *(newInfInt->_digits), this->_base, newBase);
+	newInfInt->_sign = this->_sign;
+	newInfInt->_base = newBase;
+	return newInfInt;
+}
