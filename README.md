@@ -9,6 +9,8 @@ A simple numerical arithmetic library (not finished!)
 
 This `Readme` is typographically supported by [shields.io](https://shields.io/).
 
+![| Recommand: Use Visual Studio (MSVC) to edit source code](./iamworking.png)
+
 ## Table of Contents
 
 - [Installation](#Installation)
