@@ -13,37 +13,16 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="git 相关代码">
-      <UniqueIdentifier>{db7b54bc-4902-4105-95d7-23d85f2706a7}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="modules_src\InfNumber.ixx">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="modules_src\Base.ixx">
+      <Filter>源文件</Filter>
+    </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="iamworking.png">
-      <Filter>资源文件</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include=".gitattributes">
-      <Filter>git 相关代码</Filter>
-    </None>
-    <None Include=".gitignore">
-      <Filter>git 相关代码</Filter>
-    </None>
-    <None Include="README.md">
-      <Filter>git 相关代码</Filter>
-    </None>
-    <None Include="Readme_CN.md">
-      <Filter>git 相关代码</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="LICENSE.txt">
-      <Filter>git 相关代码</Filter>
-    </Text>
   </ItemGroup>
 </Project>

@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{695da85a-3e24-4e8a-b502-aa483697e56d}</ProjectGuid>
-    <RootNamespace>EasyNumbericLib</RootNamespace>
+    <ProjectGuid>{add37df1-4d32-47f0-8bc0-299fa9e23606}</ProjectGuid>
+    <RootNamespace>DefaultProject</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -78,9 +78,6 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
-      <EnableModules>true</EnableModules>
-      <UseUnicodeForAssemblerListing>true</UseUnicodeForAssemblerListing>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -97,9 +94,6 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
-      <EnableModules>true</EnableModules>
-      <UseUnicodeForAssemblerListing>true</UseUnicodeForAssemblerListing>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -116,9 +110,6 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
-      <EnableModules>true</EnableModules>
-      <UseUnicodeForAssemblerListing>true</UseUnicodeForAssemblerListing>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -135,9 +126,6 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
-      <EnableModules>true</EnableModules>
-      <UseUnicodeForAssemblerListing>true</UseUnicodeForAssemblerListing>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -150,16 +138,9 @@
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="iamworking.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include=".gitattributes" />
-    <None Include=".gitignore" />
-    <None Include="README.md" />
-    <None Include="Readme_CN.md" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="LICENSE.txt" />
+    <ProjectReference Include="..\Basic_NumberArithmetic\Basic_NumberArithmetic.vcxproj">
+      <Project>{3c6e9655-dbfb-4adc-a983-1a984770b186}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
