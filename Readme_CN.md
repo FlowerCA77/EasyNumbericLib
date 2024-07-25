@@ -9,6 +9,8 @@
 
 本`Readme`由 [shields.io](https://shields.io/) 提供排版支持。
 
+![| Recommand: Use Visual Studio (MSVC) to edit source code](./iamworking.png)
+
 ## 目录
 
 - [安装](#安装)
