@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/badge/English-orange.svg)](./README.md)
 [![License](https://img.shields.io/badge/%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-purple.svg)](./Readme_CN.md)
 
-## About.
+## About
 
 A simple numerical arithmetic library (not finished!)
 

@@ -1,6 +1,0 @@
-import InfNumber;
-
-int main()
-{
-
-}
