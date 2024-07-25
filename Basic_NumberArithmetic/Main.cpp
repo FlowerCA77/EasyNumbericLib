@@ -1,0 +1,6 @@
+import InfNumber;
+
+int main()
+{
+
+}
